@@ -1,0 +1,13 @@
+# Large datasets
+Data/LD2011_2014.txt/
+Data/ML_DATA/
+
+# Logs
+*.log
+
+# Python cache
+__pycache__/
+*.pyc
+
+# VS Code
+.vscode/
