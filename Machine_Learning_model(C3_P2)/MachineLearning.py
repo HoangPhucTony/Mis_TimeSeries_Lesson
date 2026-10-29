@@ -164,8 +164,9 @@ logger.info("\n[1] Thêm rolling mean / rolling std")
 
 window = 3
 
-df["rolling_mean"] = df["y"].rolling(window=window).mean()
-df["rolling_std"]  = df["y"].rolling(window=window).std()
+# shift(1) để rolling chỉ dùng quá khứ (t-1 → t-window), tránh rò rỉ y_t vào feature
+df["rolling_mean"] = df["y"].shift(1).rolling(window=window).mean()
+df["rolling_std"]  = df["y"].shift(1).rolling(window=window).std()
 
 df = df.dropna()
 
@@ -188,8 +189,9 @@ logger.info("\n[2] Dự báo multi-step (h = 3)")
 h = 3
 multi_results = {}
 
+# Feature mới nhất là t-1 nên horizon 1 bước = y_t, horizon h bước = y_{t+h-1}
 for step in range(1, h + 1):
-    df[f"y_t+{step}"] = df["y"].shift(-step)
+    df[f"y_t+{step}"] = df["y"].shift(-(step - 1))
 
 df_multi = df.dropna()
 
@@ -261,10 +263,24 @@ for depth in params["max_depth"]:
 
 logger.info(f"BEST PARAM: depth={best_param[0]}, lr={best_param[1]}")
 
-# Bài 4: So sánh với Random Forest 
+# Huấn luyện lại XGBoost với tham số tốt nhất trên fold cuối (X_train, X_test từ vòng lặp trên)
+# để so sánh công bằng với Random Forest và Linear Regression trên cùng tập test
+xgb_best = XGBRegressor(
+    n_estimators=100,
+    max_depth=best_param[0],
+    learning_rate=best_param[1],
+    random_state=42
+)
+xgb_best.fit(X_train, y_train)
+y_pred = xgb_best.predict(X_test)
+
+rmse = np.sqrt(mean_squared_error(y_test, y_pred))
+mape = np.mean(np.abs((y_test - y_pred) / y_test)) * 100
+
+# Bài 4: So sánh với Random Forest
 from sklearn.ensemble import RandomForestRegressor
 
-logger.info("\n[4] So sánh XGBoost vs Random Forest")
+logger.info("\n[4] So sánh XGBoost vs Random Forest (fold cuối của TimeSeriesSplit)")
 
 rf = RandomForestRegressor(
     n_estimators=200,
@@ -278,7 +294,7 @@ rf_pred = rf.predict(X_test)
 rf_rmse = np.sqrt(mean_squared_error(y_test, rf_pred))
 
 logger.info(f"RMSE Random Forest: {rf_rmse:.2f}")
-logger.info(f"RMSE XGBoost     : {best_rmse:.2f}")
+logger.info(f"RMSE XGBoost     : {rmse:.2f}")
 
 
 # ------------------------------------------------------------------------------------------------------------------------
@@ -384,10 +400,12 @@ logger.info("RMSE tăng dần theo horizon → đặc trưng chuỗi phi tuyến
 
 
 logger.info("\nKết luận: ")
-logger.info("1. XGBoost cho RMSE thấp hơn Linear Regression → học tốt quan hệ phi tuyến")
-logger.info("2. Tăng số lag p giúp cải thiện dự báo đến một ngưỡng, sau đó gây overfitting")
+logger.info("1. Với feature chỉ gồm lag + rolling (đều là tổ hợp tuyến tính của quá khứ gần), "
+            "Linear Regression cho RMSE thấp hơn XGBoost → quan hệ giữa các giờ liền kề gần như tuyến tính")
+logger.info("2. Tăng số lag p giảm RMSE mạnh từ p=1 lên p=3, sau đó chỉ cải thiện nhẹ → lợi ích giảm dần")
 logger.info("3. Với dữ liệu Hourly Energy Consumption, XGBoost phù hợp hơn ARIMA")
 logger.info("4. MAPE giúp đánh giá sai số theo tỷ lệ %, phù hợp với dữ liệu tiêu thụ điện")
-logger.info("5. XGBoost có MAPE thấp hơn → dự báo ổn định hơn so với Linear Regression")
+logger.info("5. XGBoost vượt Random Forest; để XGBoost vượt Linear Regression cần thêm feature phi tuyến "
+            "(giờ trong ngày, thứ trong tuần, lag 24h/168h)")
 
 
