@@ -1,29 +1,43 @@
-# 📈 Phân tích Chuỗi Thời gian & Dự báo (Time Series Analysis & Forecasting)
+<div align="center">
 
-> Tổng hợp bài thực hành môn **Phân tích Chuỗi Thời gian và Dự báo** – Trường Đại học Giao thông Vận tải TP.HCM (UTH).
-> Repo đi theo lộ trình **Khám phá dữ liệu → Mô hình thống kê (ARIMA/SARIMA) → Mô hình Machine Learning (XGBoost)**, mỗi bước đều có code, biểu đồ và nhận xét.
+# Time Series Analysis & Forecasting
 
-![Python](https://img.shields.io/badge/Python-3.11-3776AB?logo=python&logoColor=white)
-![pandas](https://img.shields.io/badge/pandas-150458?logo=pandas&logoColor=white)
-![statsmodels](https://img.shields.io/badge/statsmodels-ARIMA%2FSARIMA-4B8BBE)
-![scikit-learn](https://img.shields.io/badge/scikit--learn-F7931E?logo=scikitlearn&logoColor=white)
-![XGBoost](https://img.shields.io/badge/XGBoost-EB5E28)
+**Phân tích Chuỗi Thời gian và Dự báo** · Trường Đại học Giao thông Vận tải TP.HCM (UTH)
+
+<br>
+
+![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![pandas](https://img.shields.io/badge/pandas-150458?style=for-the-badge&logo=pandas&logoColor=white)
+![NumPy](https://img.shields.io/badge/NumPy-013243?style=for-the-badge&logo=numpy&logoColor=white)
+![statsmodels](https://img.shields.io/badge/statsmodels-2C3E50?style=for-the-badge)
+![scikit-learn](https://img.shields.io/badge/scikit--learn-F7931E?style=for-the-badge&logo=scikitlearn&logoColor=white)
+![XGBoost](https://img.shields.io/badge/XGBoost-189FDD?style=for-the-badge)
+![TensorFlow](https://img.shields.io/badge/TensorFlow-FF6F00?style=for-the-badge&logo=tensorflow&logoColor=white)
+
+<br>
+
+`EDA` → `ARIMA / SARIMA` → `XGBoost` → `VAR` → `LSTM`
+
+</div>
 
 ---
 
-## 📚 Mục lục
+Repo tổng hợp các bài thực hành trong môn học, đi từ khám phá dữ liệu, mô hình thống kê cổ điển, Machine Learning cho đến dự báo đa biến và Deep Learning. Mỗi bài đều có code, biểu đồ và nhận xét.
 
-1. [Kiến thức đạt được](#-kiến-thức-đạt-được)
-2. [Cấu trúc thư mục](#-cấu-trúc-thư-mục)
-3. [Dữ liệu sử dụng](#-dữ-liệu-sử-dụng)
-4. [Chương 2 – Làm việc với dữ liệu chuỗi thời gian](#-chương-2--làm-việc-với-dữ-liệu-chuỗi-thời-gian)
-5. [Chương 3.1 – Mô hình thống kê ARIMA / SARIMA](#-chương-31--mô-hình-thống-kê-arima--sarima)
-6. [Chương 3.2 – Mô hình Machine Learning](#-chương-32--mô-hình-machine-learning)
-7. [Cài đặt & chạy](#-cài-đặt--chạy)
+## Mục lục
+
+1. [Kiến thức đạt được](#kiến-thức-đạt-được)
+2. [Cấu trúc thư mục](#cấu-trúc-thư-mục)
+3. [Dữ liệu sử dụng](#dữ-liệu-sử-dụng)
+4. [Chương 2 – Làm việc với dữ liệu chuỗi thời gian](#chương-2--làm-việc-với-dữ-liệu-chuỗi-thời-gian)
+5. [Chương 3.1 – Mô hình thống kê ARIMA / SARIMA](#chương-31--mô-hình-thống-kê-arima--sarima)
+6. [Chương 3.2 – Mô hình Machine Learning](#chương-32--mô-hình-machine-learning)
+7. [Chương 4–5 – Dự báo đa biến: VAR, XGBoost, LSTM](#chương-45--dự-báo-đa-biến-var-xgboost-lstm)
+8. [Cài đặt & chạy](#cài-đặt--chạy)
 
 ---
 
-## 🎯 Kiến thức đạt được
+## Kiến thức đạt được
 
 | Chủ đề | Nội dung cụ thể |
 |---|---|
@@ -38,10 +52,13 @@
 | **Tránh data leakage** | Rolling feature phải `shift(1)` trước khi tính để không chứa giá trị cần dự báo |
 | **Machine Learning** | XGBoost, Random Forest, Linear Regression, feature importance |
 | **Đánh giá & tối ưu** | MAE, RMSE, MAPE · Multi-step forecasting (t+1…t+3) · Tune tham số bằng `TimeSeriesSplit` |
+| **Dự báo đa biến** | Dùng biến ngoại sinh (nhiệt độ, độ ẩm, gió) · Mô hình **VAR**, chọn bậc trễ bằng AIC |
+| **Deep Learning** | **LSTM** xếp chồng, dữ liệu 3D `(samples, timesteps, features)`, sliding window 24h, EarlyStopping |
+| **Quy trình đánh giá chuẩn** | Chia Train/Val/Test 70/15/15 · `StandardScaler` chỉ fit trên train · **Walk-forward validation** |
 
 ---
 
-## 🗂 Cấu trúc thư mục
+## Cấu trúc thư mục
 
 ```
 Mis_TimeSeries_Lesson/
@@ -60,12 +77,20 @@ Mis_TimeSeries_Lesson/
 ├── Machine_Learning_model(C3_P2)/     # Chương 3 – Phần 2: mô hình ML
 │   ├── MachineLearning.py             #   PJM Hourly Energy Consumption
 │   └── plot/
+├── Deep_Learning_model(C4_C5)/        # Chương 4–5: dự báo đa biến (Load + Weather)
+│   ├── utils.py                       #   Hàm dùng chung: load data, logging, split, scale
+│   ├── data_description.py            #   EDA dữ liệu đa biến
+│   ├── var_model.py                   #   VAR (baseline thống kê)
+│   ├── xgb_model.py                   #   XGBoost (Machine Learning)
+│   ├── lstm_model.py                  #   LSTM (Deep Learning)
+│   ├── logs/                          #   Log nhận xét của từng mô hình
+│   └── plots/                         #   Biểu đồ: description / var / xgb / lstm
 └── khác(TaiLieuThamKhao)/             # Tài liệu & code tham khảo (z-table, ADF, ACF/PACF...)
 ```
 
 ---
 
-## 💾 Dữ liệu sử dụng
+## Dữ liệu sử dụng
 
 | Dataset | Tần suất | Số quan sát | Dùng ở |
 |---|---|---|---|
@@ -73,12 +98,13 @@ Mis_TimeSeries_Lesson/
 | `AirPassengers.csv` – Số hành khách hàng không (1949–1960) | Tháng | 144 | C2 – Bài 2, 3, 5 · C3 – SARIMA |
 | `Monthly_Retail_Sales.csv` – Doanh số bán lẻ (1991–2008) | Tháng | 204 | C3 – ARIMA |
 | `ML_DATA/PJMW_hourly.csv` – [PJM Hourly Energy Consumption](https://www.kaggle.com/datasets/robikscube/hourly-energy-consumption) | Giờ | ~143.000 | C3 – Machine Learning |
+| `data_lab4/weather and load dataset.csv` – Điện năng tiêu thụ + thời tiết (11/2021–11/2022) | Giờ | 8.779 | C4–C5 – VAR, XGBoost, LSTM |
 
-> ⚠️ Thư mục `Data/ML_DATA/` (~45 MB) không được đưa lên GitHub. Tải dataset từ Kaggle ở link trên và đặt vào `Data/ML_DATA/`.
+> **Lưu ý:** Thư mục `Data/ML_DATA/` (~45 MB) không được đưa lên GitHub. Tải dataset từ Kaggle ở link trên và đặt vào `Data/ML_DATA/`.
 
 ---
 
-## 🔍 Chương 2 – Làm việc với dữ liệu chuỗi thời gian
+## Chương 2 – Làm việc với dữ liệu chuỗi thời gian
 
 | Bài | Nội dung | Kết luận chính |
 |---|---|---|
@@ -91,7 +117,7 @@ Mis_TimeSeries_Lesson/
 
 ---
 
-## 📊 Chương 3.1 – Mô hình thống kê ARIMA / SARIMA
+## Chương 3.1 – Mô hình thống kê ARIMA / SARIMA
 
 ### Quy trình Box–Jenkins đã thực hiện
 
@@ -99,7 +125,7 @@ Mis_TimeSeries_Lesson/
 EDA ─▶ Kiểm định ADF ─▶ Sai phân (d, D) ─▶ ACF/PACF chọn (p,q)(P,Q) ─▶ Fit mô hình ─▶ Chẩn đoán phần dư ─▶ Forecast & đánh giá
 ```
 
-### 🛒 Monthly Retail Sales – `ARIMA_MODEL.py`
+### Monthly Retail Sales – `ARIMA_MODEL.py`
 
 - Chuỗi gốc có **trend tăng + mùa vụ 12 tháng + phương sai tăng dần** → ADF xác nhận **không dừng** (p-value ≈ 1.00).
 - Sai phân bậc 1 vẫn chưa dừng (p = 0.117); sai phân bậc 2 vượt qua ADF (p ≈ 3.5e-18) nhưng ACF/PACF bị kéo dài bất thường → dấu hiệu **over-differencing**. Vì vậy chọn `d = 1` và xử lý phần không dừng còn lại bằng **sai phân mùa vụ `D = 1`**.
@@ -123,7 +149,7 @@ EDA ─▶ Kiểm định ADF ─▶ Sai phân (d, D) ─▶ ACF/PACF chọn (p,
 
 → SARIMA giảm sai số **~58%** (RMSE 4.62 → 1.95), MAPE giảm từ 18% xuống dưới 9%.
 
-### ✈️ AirPassengers – `SARIMA_MODEL.py`
+### AirPassengers – `SARIMA_MODEL.py`
 
 - Chuỗi gốc không dừng (ADF p = 0.992). Sai phân thường `d=1` kết hợp sai phân mùa vụ `D=1, s=12` → chuỗi dừng (p < 0.001).
 - ACF/PACF có spike ở lag 1 và lag 12 → chọn **SARIMA(1,1,1)(1,1,1,12)**.
@@ -148,7 +174,7 @@ EDA ─▶ Kiểm định ADF ─▶ Sai phân (d, D) ─▶ ACF/PACF chọn (p,
 
 ---
 
-## 🤖 Chương 3.2 – Mô hình Machine Learning
+## Chương 3.2 – Mô hình Machine Learning
 
 **Dataset:** PJM West – điện tiêu thụ theo giờ (MW). Bài toán dự báo được chuyển thành **hồi quy có giám sát** bằng cách tạo đặc trưng từ quá khứ.
 
@@ -216,25 +242,117 @@ EDA ─▶ Kiểm định ADF ─▶ Sai phân (d, D) ─▶ ACF/PACF chọn (p,
 
 ---
 
-## ⚙️ Cài đặt & chạy
+## Chương 4–5 – Dự báo đa biến: VAR, XGBoost, LSTM
+
+**Bài toán:** dự báo điện năng tiêu thụ `load_MW` của giờ tiếp theo, dựa trên lịch sử tải và các biến thời tiết (`temperature`, `humidity`, `wind_speed`).
+Ba hướng tiếp cận được so sánh trên **cùng một quy trình**:
+
+```
+Load data ─▶ Train/Val/Test 70/15/15 (theo thời gian) ─▶ StandardScaler fit trên train (XGBoost, LSTM) ─▶ Huấn luyện ─▶ Walk-forward 1.317 bước ─▶ Đánh giá (MW)
+```
+
+> **Walk-forward validation:** dự báo t+1 → đưa **giá trị thật** của t+1 vào lịch sử → dự báo t+2 → … Cách này mô phỏng đúng việc dự báo ngoài thực tế, nơi mỗi giờ ta lại có thêm một quan sát mới.
+
+### 1. Khám phá dữ liệu – `data_description.py`
+
+- 8.779 quan sát theo giờ, **không có missing và duplicate**. Theo IQR có 171 outlier ở `load_MW` (gồm các giờ load ≈ 0 MW), 210 ở `temperature`, 122 ở `wind_speed`.
+- ACF có đỉnh lặp lại tại lag **24, 48, 72…** (chu kỳ ngày) và lag **168** (chu kỳ tuần). PACF có spike mạnh ở lag 1.
+- **Nhiệt độ** là biến thời tiết tương quan mạnh nhất với load; độ ẩm và tốc độ gió ảnh hưởng yếu.
+
+<table>
+<tr>
+<td><img src="Deep_Learning_model(C4_C5)/plots/description/2_acf_load.png" alt="ACF load"></td>
+<td><img src="Deep_Learning_model(C4_C5)/plots/description/4_load_vs_temperature.png" alt="Load vs temperature"></td>
+</tr>
+<tr>
+<td align="center">ACF: chu kỳ 24h và 168h</td>
+<td align="center">Load tăng theo nhiệt độ</td>
+</tr>
+<tr>
+<td><img src="Deep_Learning_model(C4_C5)/plots/description/7_correlation_matrix.png" alt="Correlation matrix"></td>
+<td><img src="Deep_Learning_model(C4_C5)/plots/description/8_stl_decomposition_load.png" alt="STL decomposition"></td>
+</tr>
+<tr>
+<td align="center">Ma trận tương quan</td>
+<td align="center">STL decomposition (period = 24)</td>
+</tr>
+</table>
+
+### 2. Ba mô hình
+
+| | **VAR** – `var_model.py` | **XGBoost** – `xgb_model.py` | **LSTM** – `lstm_model.py` |
+|---|---|---|---|
+| Nhóm | Thống kê (baseline) | Machine Learning | Deep Learning |
+| Đầu vào | 4 biến, sai phân bậc 1 | 99 feature: lag 1–24 của 4 biến + rolling mean 6h, rolling std 24h, load trend | Cửa sổ 24 giờ × 4 biến |
+| Điểm chính | ADF trên train: `temperature`, `humidity` không dừng → `d = 1`. AIC chọn bậc trễ **p = 6** | Tối đa 500 cây, `max_depth=6`, early stopping trên validation → 113 cây | `LSTM(64) → LSTM(32) → Dense(1)`, 30.113 tham số, loss MSE, Adam, EarlyStopping (patience 5) |
+
+### 3. Kết quả trên tập test (1.317 giờ, 08/09 → 01/11/2022)
+
+| Mô hình | RMSE (MW) | MAE (MW) | MAPE* |
+|---|---|---|---|
+| VAR(6) | 7.46 | 4.98 | 6.28% |
+| XGBoost | 7.37 | **4.54** | **5.46%** |
+| **LSTM** | **7.30** | 4.82 | 5.99% |
+
+<sub>* MAPE tính trên các giờ có load ≠ 0 MW.</sub>
+
+<table>
+<tr>
+<td><img src="Deep_Learning_model(C4_C5)/plots/lstm/1_LSTM_Actual_vs_Predicted_Load.png" alt="LSTM walk-forward"></td>
+<td><img src="Deep_Learning_model(C4_C5)/plots/xgb/2_XGBoost_Actual_vs_Predicted_Load.png" alt="XGBoost walk-forward"></td>
+</tr>
+<tr>
+<td align="center">LSTM – Actual vs Predicted (walk-forward)</td>
+<td align="center">XGBoost – Actual vs Predicted (walk-forward)</td>
+</tr>
+<tr>
+<td><img src="Deep_Learning_model(C4_C5)/plots/lstm/2_LSTM_Train_vs_Val_Loss.png" alt="LSTM loss"></td>
+<td><img src="Deep_Learning_model(C4_C5)/plots/xgb/1_XGBoost_Feature_Importance_Top15.png" alt="XGBoost feature importance"></td>
+</tr>
+<tr>
+<td align="center">LSTM – Training vs Validation loss</td>
+<td align="center">XGBoost – Top 15 feature importance (gain)</td>
+</tr>
+</table>
+
+### Nhận xét chính
+
+- **Ba mô hình chênh nhau rất ít** (RMSE 7.30 – 7.46 MW). LSTM có RMSE thấp nhất, XGBoost có MAE và MAPE thấp nhất. Với dự báo 1 giờ tới, lịch sử tải gần nhất chứa phần lớn thông tin, nên baseline tuyến tính VAR đã rất cạnh tranh.
+- **XGBoost dựa chủ yếu vào `load_lag_1`, `load_lag_2`** và nhóm lag 23–24 giờ (chu kỳ ngày). Các biến thời tiết chỉ đóng góp nhỏ khi đã có lịch sử load.
+- Cả ba mô hình bắt tốt chu kỳ ngày. Sai số tập trung ở các **spike đột ngột** (ví dụ các giờ load rơi về 0 MW) – những sự kiện hiếm, không lặp lại trong dữ liệu huấn luyện.
+- **LSTM** hội tụ nhanh: validation loss nhỏ nhất tại epoch 7, EarlyStopping dừng ở epoch 13 và khôi phục trọng số tốt nhất. Kết quả được cố định bằng `set_random_seed(42)`.
+- **MAPE cần dùng cẩn thận:** dữ liệu có giờ load bằng 0 MW (chia cho 0) và nhiều giờ load rất nhỏ, khiến MAPE bị khuếch đại. Vì vậy RMSE và MAE là thước đo chính khi so sánh.
+
+### Bài học từ quá trình sửa lỗi
+
+| Lỗi | Hậu quả | Cách sửa |
+|---|---|---|
+| Inverse scaling LSTM lấy nhầm cột `YEAR` | RMSE báo 0.13, MAPE 0.004% – vô nghĩa | Lấy đúng chỉ số cột `load_MW` |
+| Rolling feature XGBoost chứa `load_t` | Mô hình học quan hệ rò rỉ, không khớp lúc dự báo | Tính trên `load.shift(1)` → RMSE 7.57 → 7.37 |
+| VAR đảo sai phân từ mốc cuối tập train | Đường "Actual" bị dời xuống ~27 MW, MAPE sai | Lấy mốc cuối tập validation, history gồm train + val |
+
+---
+
+## Cài đặt & chạy
 
 ```bash
 git clone https://github.com/HoangPhucTony/Mis_TimeSeries_Lesson.git
 ```
 
 ```bash
-pip install pandas numpy matplotlib seaborn scipy statsmodels scikit-learn xgboost
+pip install pandas numpy matplotlib seaborn scipy statsmodels scikit-learn xgboost tensorflow
 ```
 
 ```bash
 python "Statistical_model(C3_P1)/SARIMA/SARIMA_MODEL.py"
 ```
 
-> 📝 Các script đang dùng **đường dẫn tuyệt đối** (`C:\DOHOANGPHUC\...`). Khi chạy trên máy khác, sửa biến `path`, `LOG_DIR`, `PLOT_DIR` ở đầu mỗi file cho phù hợp.
+> **Lưu ý:** Các script đang dùng **đường dẫn tuyệt đối** (`C:\DOHOANGPHUC\...`). Khi chạy trên máy khác, sửa biến `path`, `LOG_DIR`, `PLOT_DIR`, `BASE_DIR`, `data_path` ở đầu mỗi file cho phù hợp.
+> Các script trong `Deep_Learning_model(C4_C5)/` import `utils.py`, nên cần chạy **từ bên trong thư mục đó**.
 
 ---
 
-## 👤 Tác giả
+## Tác giả
 
 **Đỗ Hoàng Phúc** – Sinh viên UTH
 GitHub: [@HoangPhucTony](https://github.com/HoangPhucTony)
